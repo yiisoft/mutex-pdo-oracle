@@ -52,9 +52,9 @@ class OracleMutex extends Mutex
      */
     public function __construct(
         \PDO $connection,
-        $lockMode = self::MODE_X,
-        $releaseOnCommit = false,
-        $autoRelease = true
+        string $lockMode = self::MODE_X,
+        bool $releaseOnCommit = false,
+        bool $autoRelease = true
     ) {
         $this->connection = $connection;
         parent::__construct($autoRelease);
@@ -80,13 +80,13 @@ class OracleMutex extends Mutex
      *
      * @return bool acquiring result.
      */
-    protected function acquireLock($name, $timeout = 0)
+    protected function acquireLock(string $name, int $timeout = 0): bool
     {
         $lockStatus = null;
 
         // clean vars before using
         $releaseOnCommit = $this->releaseOnCommit ? 'TRUE' : 'FALSE';
-        $timeout = abs((int) $timeout);
+        $timeout = (int) abs($timeout);
 
         // inside pl/sql scopes pdo binding not working correctly :(
 
@@ -118,7 +118,7 @@ class OracleMutex extends Mutex
      *
      * @see http://docs.oracle.com/cd/B19306_01/appdev.102/b14258/d_lock.htm
      */
-    protected function releaseLock($name)
+    protected function releaseLock(string $name): bool
     {
         $releaseStatus = null;
 
