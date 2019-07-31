@@ -8,12 +8,6 @@
     ],
     "homepage": "http://www.yiiframework.com/",
     "license": "BSD-3-Clause",
-    "authors": [
-        {
-            "name": "Alexander Zlakomanov",
-            "email": "zlakomanoff@gmail.com"
-        }
-    ],
     "support": {
         "source": "https://github.com/yiisoft/mutex-db-oracle",
         "issues": "https://github.com/yiisoft/mutex-db-oracle/issues",
