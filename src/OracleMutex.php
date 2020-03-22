@@ -56,7 +56,7 @@ class OracleMutex extends Mutex
         $driverName = $connection->getAttribute(\PDO::ATTR_DRIVER_NAME);
         if (in_array($driverName, ['oci', 'obdb'])) {
             throw new \InvalidArgumentException(
-                'Connection must be configured to use Oracle database. Got '.$driverName.'.'
+                'Connection must be configured to use Oracle database. Got ' . $driverName . '.'
             );
         }
 
@@ -90,9 +90,9 @@ class OracleMutex extends Mutex
             DBMS_LOCK.ALLOCATE_UNIQUE(:name, handle);
             :lockStatus := DBMS_LOCK.REQUEST(
                 handle,
-                DBMS_LOCK.'.$this->lockMode.',
-                '.$timeout.',
-                '.$releaseOnCommit.'
+                DBMS_LOCK.' . $this->lockMode . ',
+                ' . $timeout . ',
+                ' . $releaseOnCommit . '
             );
         END;');
 
