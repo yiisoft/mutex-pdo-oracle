@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Yiisoft\Mutex\File;
 
 use PDO;
-use Yiisoft\Mutex\MutexFactoryInterface;
+use Yiisoft\Mutex\MutexFactory;
 use Yiisoft\Mutex\MutexInterface;
 use Yiisoft\Mutex\OracleMutex;
 
 /**
  * Allows creating {@see OracleMutex} mutex objects.
  */
-final class OracleMutexFactory implements MutexFactoryInterface
+final class OracleMutexFactory extends MutexFactory
 {
     private PDO $connection;
     private bool $autoRelease;
