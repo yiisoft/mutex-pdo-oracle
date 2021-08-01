@@ -25,7 +25,6 @@ final class OracleMutexFactory implements MutexFactoryInterface
      */
     public function __construct(PDO $connection, string $lockMode = OracleMutex::MODE_X, bool $releaseOnCommit = false, bool $autoRelease = true)
     {
-
         $this->connection = $connection;
         $this->lockMode = $lockMode;
         $this->releaseOnCommit = $releaseOnCommit;
