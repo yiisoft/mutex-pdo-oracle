@@ -4,15 +4,17 @@ declare(strict_types=1);
 
 namespace Yiisoft\Mutex;
 
+use InvalidArgumentException;
+use PDO;
+
 /**
  * OracleMutex implements mutex "lock" mechanism via Oracle locks.
  *
  * Application configuration example:
  *
  * @see http://docs.oracle.com/cd/B19306_01/appdev.102/b14258/d_lock.htm
- * @see Mutex
  */
-class OracleMutex extends Mutex
+class OracleMutex implements MutexInterface
 {
     /** available lock modes */
     public const MODE_X = 'X_MODE';
@@ -22,61 +24,66 @@ class OracleMutex extends Mutex
     public const MODE_SS = 'SS_MODE';
     public const MODE_SSX = 'SSX_MODE';
 
-    /**
-     * @var \PDO
-     */
-    protected $connection;
+    protected PDO $connection;
 
     /**
      * @var string lock mode to be used.
      *
      * @see http://docs.oracle.com/cd/B19306_01/appdev.102/b14258/d_lock.htm#CHDBCFDI
      */
-    private $lockMode;
+    private string $lockMode;
     /**
      * @var bool whether to release lock on commit.
      */
-    private $releaseOnCommit;
+    private bool $releaseOnCommit;
+
+    private string $name;
 
     /**
      * OracleMutex constructor.
      *
-     * @param \PDO   $connection
-     * @param string $lockMode        lock mode to be used.
-     * @param bool   $releaseOnCommit whether to release lock on commit.
-     * @param bool   $autoRelease
+     * @param string $name Mutex name.
+     * @param PDO $connection PDO connection instance to use.
+     * @param string $lockMode Lock mode to be used.
+     * @param bool $releaseOnCommit Whether to release lock on commit.
+     * @param bool $autoRelease Whether all locks acquired in this process (i.e. local locks) must be released
+     * automatically before finishing script execution. Defaults to true. Setting this property
+     * to true means that all locks acquired in this process must be released (regardless of
+     * errors or exceptions).
      */
     public function __construct(
-        \PDO $connection,
+        string $name,
+        PDO $connection,
         string $lockMode = self::MODE_X,
         bool $releaseOnCommit = false,
         bool $autoRelease = true
     ) {
+        $this->name = $name;
         $this->connection = $connection;
-        parent::__construct($autoRelease);
 
-        $driverName = $connection->getAttribute(\PDO::ATTR_DRIVER_NAME);
+        $driverName = $connection->getAttribute(PDO::ATTR_DRIVER_NAME);
         if (in_array($driverName, ['oci', 'obdb'])) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Connection must be configured to use Oracle database. Got ' . $driverName . '.'
             );
         }
 
         $this->lockMode = $lockMode;
         $this->releaseOnCommit = $releaseOnCommit;
+
+        if ($autoRelease) {
+            register_shutdown_function(function () {
+                $this->release();
+            });
+        }
     }
 
     /**
-     * Acquires lock by given name.
+     * {@inheritdoc}
      *
      * @see http://docs.oracle.com/cd/B19306_01/appdev.102/b14258/d_lock.htm
-     *
-     * @param string $name    of the lock to be acquired.
-     * @param int    $timeout time (in seconds) to wait for lock to become released.
-     *
-     * @return bool acquiring result.
      */
-    protected function acquireLock(string $name, int $timeout = 0): bool
+    public function acquire(int $timeout = 0): bool
     {
         $lockStatus = null;
 
@@ -98,23 +105,19 @@ class OracleMutex extends Mutex
             );
         END;');
 
-        $statement->bindValue(':name', $name);
-        $statement->bindParam(':lockStatus', $lockStatus, \PDO::PARAM_INT, 1);
+        $statement->bindValue(':name', $this->name);
+        $statement->bindParam(':lockStatus', $lockStatus, PDO::PARAM_INT, 1);
         $statement->execute();
 
         return $lockStatus === 0 || $lockStatus === '0';
     }
 
     /**
-     * Releases lock by given name.
-     *
-     * @param string $name of the lock to be released.
-     *
-     * @return bool release result.
+     * {@inheritdoc}
      *
      * @see http://docs.oracle.com/cd/B19306_01/appdev.102/b14258/d_lock.htm
      */
-    protected function releaseLock(string $name): bool
+    public function release(): void
     {
         $releaseStatus = null;
 
@@ -126,10 +129,12 @@ class OracleMutex extends Mutex
                 :result := DBMS_LOCK.RELEASE(handle);
             END;'
         );
-        $statement->bindValue(':name', $name);
-        $statement->bindParam(':result', $releaseStatus, \PDO::PARAM_INT, 1);
+        $statement->bindValue(':name', $this->name);
+        $statement->bindParam(':result', $releaseStatus, PDO::PARAM_INT, 1);
         $statement->execute();
 
-        return $releaseStatus === 0 || $releaseStatus === '0';
+        if ($releaseStatus !== 0 && $releaseStatus !== '0') {
+            throw new RuntimeExceptions("Unable to release lock \"$this->name\".");
+        }
     }
 }
