@@ -1,7 +1,7 @@
 {
-    "name": "yiisoft/mutex-db-oracle",
+    "name": "yiisoft/mutex-pdo-oracle",
     "type": "library",
-    "description": "Yii Mutex Library - Oracle DB Driver",
+    "description": "Yii Mutex Library - Oracle PDO Driver",
     "keywords": [
         "yii",
         "mutex"
@@ -9,8 +9,8 @@
     "homepage": "http://www.yiiframework.com/",
     "license": "BSD-3-Clause",
     "support": {
-        "source": "https://github.com/yiisoft/mutex-db-oracle",
-        "issues": "https://github.com/yiisoft/mutex-db-oracle/issues",
+        "source": "https://github.com/yiisoft/mutex-pdo-oracle",
+        "issues": "https://github.com/yiisoft/mutex-pdo-oracle/issues",
         "forum": "http://www.yiiframework.com/forum/",
         "wiki": "http://www.yiiframework.com/wiki/",
         "irc": "irc://irc.freenode.net/yii"
