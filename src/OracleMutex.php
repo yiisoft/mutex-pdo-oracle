@@ -131,10 +131,10 @@ class OracleMutex extends Mutex
         if ($releaseStatus !== 0 && $releaseStatus !== '0') {
             throw new RuntimeExceptions("Unable to release lock \"$this->name\".");
         }
-        
+
         $this->released = true;
     }
-    
+
     public function isReleased(): bool
     {
         return $this->released;
