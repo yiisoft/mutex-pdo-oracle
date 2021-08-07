@@ -67,7 +67,7 @@ class OracleMutex implements MutexInterface
         $this->lockMode = $lockMode;
         $this->releaseOnCommit = $releaseOnCommit;
     }
-    
+
     public function __destruct()
     {
         if (!$this->released) {
