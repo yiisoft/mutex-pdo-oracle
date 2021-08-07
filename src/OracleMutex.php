@@ -25,6 +25,7 @@ class OracleMutex implements MutexInterface
     public const MODE_SSX = 'SSX_MODE';
 
     protected PDO $connection;
+    private bool $released = false;
 
     /**
      * @var string lock mode to be used.
@@ -46,17 +47,12 @@ class OracleMutex implements MutexInterface
      * @param PDO $connection PDO connection instance to use.
      * @param string $lockMode Lock mode to be used.
      * @param bool $releaseOnCommit Whether to release lock on commit.
-     * @param bool $autoRelease Whether all locks acquired in this process (i.e. local locks) must be released
-     * automatically before finishing script execution. Defaults to true. Setting this property
-     * to true means that all locks acquired in this process must be released (regardless of
-     * errors or exceptions).
      */
     public function __construct(
         string $name,
         PDO $connection,
         string $lockMode = self::MODE_X,
-        bool $releaseOnCommit = false,
-        bool $autoRelease = true
+        bool $releaseOnCommit = false
     ) {
         $this->name = $name;
         $this->connection = $connection;
@@ -70,11 +66,12 @@ class OracleMutex implements MutexInterface
 
         $this->lockMode = $lockMode;
         $this->releaseOnCommit = $releaseOnCommit;
+    }
 
-        if ($autoRelease) {
-            register_shutdown_function(function () {
-                $this->release();
-            });
+    public function __destruct()
+    {
+        if (!$this->released) {
+            $this->release();
         }
     }
 
@@ -109,7 +106,12 @@ class OracleMutex implements MutexInterface
         $statement->bindParam(':lockStatus', $lockStatus, PDO::PARAM_INT, 1);
         $statement->execute();
 
-        return $lockStatus === 0 || $lockStatus === '0';
+        if ($lockStatus === 0 || $lockStatus === '0') {
+            $this->released = false;
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -136,5 +138,7 @@ class OracleMutex implements MutexInterface
         if ($releaseStatus !== 0 && $releaseStatus !== '0') {
             throw new RuntimeExceptions("Unable to release lock \"$this->name\".");
         }
+
+        $this->released = true;
     }
 }
