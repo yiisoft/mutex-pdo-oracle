@@ -14,7 +14,7 @@ use PDO;
  *
  * @see http://docs.oracle.com/cd/B19306_01/appdev.102/b14258/d_lock.htm
  */
-class OracleMutex extends Mutex
+class OracleMutex implements MutexInterface
 {
     /** available lock modes */
     public const MODE_X = 'X_MODE';
@@ -66,6 +66,13 @@ class OracleMutex extends Mutex
 
         $this->lockMode = $lockMode;
         $this->releaseOnCommit = $releaseOnCommit;
+    }
+    
+    public function __destruct()
+    {
+        if (!$this->released) {
+            $this->release();
+        }
     }
 
     /**
@@ -133,10 +140,5 @@ class OracleMutex extends Mutex
         }
 
         $this->released = true;
-    }
-
-    public function isReleased(): bool
-    {
-        return $this->released;
     }
 }
