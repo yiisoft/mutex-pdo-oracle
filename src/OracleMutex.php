@@ -2,10 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Yiisoft\Mutex;
+namespace Yiisoft\Mutex\Oracle;
 
 use InvalidArgumentException;
 use PDO;
+use RuntimeException;
+use Yiisoft\Mutex\MutexInterface;
 
 /**
  * OracleMutex implements mutex "lock" mechanism via Oracle locks.
@@ -14,7 +16,7 @@ use PDO;
  *
  * @see http://docs.oracle.com/cd/B19306_01/appdev.102/b14258/d_lock.htm
  */
-class OracleMutex implements MutexInterface
+final class OracleMutex implements MutexInterface
 {
     /** available lock modes */
     public const MODE_X = 'X_MODE';
@@ -28,13 +30,14 @@ class OracleMutex implements MutexInterface
     private bool $released = false;
 
     /**
-     * @var string lock mode to be used.
+     * @var string Lock mode to be used.
      *
      * @see http://docs.oracle.com/cd/B19306_01/appdev.102/b14258/d_lock.htm#CHDBCFDI
      */
     private string $lockMode;
+
     /**
-     * @var bool whether to release lock on commit.
+     * @var bool Whether to release lock on commit.
      */
     private bool $releaseOnCommit;
 
@@ -57,7 +60,9 @@ class OracleMutex implements MutexInterface
         $this->name = $name;
         $this->connection = $connection;
 
+        /** @var string $driverName */
         $driverName = $connection->getAttribute(PDO::ATTR_DRIVER_NAME);
+
         if (in_array($driverName, ['oci', 'obdb'])) {
             throw new InvalidArgumentException(
                 'Connection must be configured to use Oracle database. Got ' . $driverName . '.'
@@ -86,7 +91,6 @@ class OracleMutex implements MutexInterface
 
         // clean vars before using
         $releaseOnCommit = $this->releaseOnCommit ? 'TRUE' : 'FALSE';
-        $timeout = (int) abs($timeout);
 
         // inside pl/sql scopes pdo binding not working correctly :(
 
@@ -136,7 +140,7 @@ class OracleMutex implements MutexInterface
         $statement->execute();
 
         if ($releaseStatus !== 0 && $releaseStatus !== '0') {
-            throw new RuntimeExceptions("Unable to release lock \"$this->name\".");
+            throw new RuntimeException("Unable to release lock \"$this->name\".");
         }
 
         $this->released = true;
