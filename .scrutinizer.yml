@@ -5,34 +5,15 @@ filter:
   paths:
     - "src/*"
 
-build:
-  environment:
-    php:
-      version: 7.4.14
-      compile_options: '--with-config-file-path=/home/scrutinizer/.phpenv/versions/7.4.14/etc --with-config-file-scan-dir=/home/scrutinizer/.phpenv/versions/7.4.14/etc/conf.d --prefix=/home/scrutinizer/.phpenv/versions/7.4.14 --libexecdir=/home/scrutinizer/.phpenv/versions/7.4.14/libexec --enable-intl --with-openssl --enable-gd --enable-exif --with-libzip --with-zlib --with-sodium --enable-soap --enable-xmlreader --with-xsl --enable-ftp --with-tidy --with-xmlrpc --enable-sysvsem --enable-sysvshm --enable-sysvmsg --enable-shmop --enable-pcntl --with-readline --enable-mbstring --with-curl --with-oci8 --with-pdo-oci --with-gettext --enable-sockets --with-bz2 --enable-bcmath --enable-calendar --with-libdir=lib --enable-fpm --enable-maintainer-zts --with-gmp --with-kerberos --with-imap --with-imap-ssl --with-apxs2=/usr/bin/apxs --with-ldap --with-pear=/home/scrutinizer/.phpenv/versions/7.4.14/pear'
+tools:
+  external_code_coverage: true
 
+build:
   nodes:
     analysis:
+      environment:
+        php: 7.4.14
+
       tests:
         override:
           - php-scrutinizer-run
-
-    tests-and-coverage:
-      services:
-        oracle:
-          image: hub.docker.com/r/wnameless/oracle-xe-11g-r2:latest
-          ports:
-            - 1521
-
-      dependencies:
-        override:
-          - composer self-update
-          - composer update --prefer-dist --no-interaction --no-progress --optimize-autoloader --ansi
-
-      tests:
-        override:
-          - command: "./vendor/bin/phpunit --coverage-clover ./coverage.xml"
-            on_node: 1
-            coverage:
-              file: coverage.xml
-              format: php-clover
