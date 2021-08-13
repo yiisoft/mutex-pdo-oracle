@@ -56,7 +56,7 @@ final class OracleMutex extends Mutex
                 '"%s" is not valid lock mode for "%s". It must be one of the values of: "%s".',
                 $lockMode,
                 self::class,
-                implode('", "', self::MODES)
+                implode('", "', self::MODES),
             ));
         }
 
