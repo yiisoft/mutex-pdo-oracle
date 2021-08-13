@@ -19,7 +19,7 @@ build:
 
     tests-and-coverage:
       services:
-        image: hub.docker.com/r/wnameless/oracle-xe-11g-r2::latest
+        image: hub.docker.com/r/wnameless/oracle-xe-11g-r2:latest
         ports:
           - 1521
 
