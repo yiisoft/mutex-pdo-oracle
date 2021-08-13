@@ -115,16 +115,16 @@ final class OracleMutexTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(sprintf(
-                '"incorrect-mode" is not valid lock mode for "%s". It must be one of the values of: "%s".',
+            '"incorrect-mode" is not valid lock mode for "%s". It must be one of the values of: "%s".',
             OracleMutex::class,
-                implode('", "', [
-                    OracleMutex::MODE_X,
-                    OracleMutex::MODE_NL,
-                    OracleMutex::MODE_S,
-                    OracleMutex::MODE_SX,
-                    OracleMutex::MODE_SS,
-                    OracleMutex::MODE_SSX,
-                ]),
+            implode('", "', [
+                OracleMutex::MODE_X,
+                OracleMutex::MODE_NL,
+                OracleMutex::MODE_S,
+                OracleMutex::MODE_SX,
+                OracleMutex::MODE_SS,
+                OracleMutex::MODE_SSX,
+            ]),
         ));
 
         new OracleMutex('testConstructorFailureForIncorrectLockMode', $this->connection(), 'incorrect-mode');
