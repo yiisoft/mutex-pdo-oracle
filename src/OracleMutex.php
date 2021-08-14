@@ -80,7 +80,7 @@ final class OracleMutex extends Mutex
      *
      * @see https://docs.oracle.com/en/database/oracle/oracle-database/21/arpls/DBMS_LOCK.html
      */
-    public function acquireLock(int $timeout = 0): bool
+    protected function acquireLock(int $timeout = 0): bool
     {
         $lockStatus = 4;
 
@@ -115,7 +115,7 @@ final class OracleMutex extends Mutex
      *
      * @see https://docs.oracle.com/en/database/oracle/oracle-database/21/arpls/DBMS_LOCK.html
      */
-    public function releaseLock(): bool
+    protected function releaseLock(): bool
     {
         $releaseStatus = 4;
 
