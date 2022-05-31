@@ -84,14 +84,16 @@ final class OracleMutexTest extends TestCase
 
         unset($mutex);
 
-        $statement = $this->connection()->prepare(
-            'DECLARE
+        $statement = $this
+            ->connection()
+            ->prepare(
+                'DECLARE
                 handle VARCHAR2(128);
             BEGIN
                 DBMS_LOCK.ALLOCATE_UNIQUE(:name, handle);
                 :releaseStatus := DBMS_LOCK.RELEASE(handle);
             END;'
-        );
+            );
 
         $releaseStatus = 0;
         $statement->bindValue(':name', $mutexName);
