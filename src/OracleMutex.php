@@ -33,23 +33,19 @@ final class OracleMutex extends Mutex
         self::MODE_SS,
         self::MODE_SSX,
     ];
-
-    private string $lockName;
-    private PDO $connection;
     private string $lockMode;
-    private bool $releaseOnCommit;
 
     /**
-     * @param string $name Mutex name.
+     * @param string $lockName Mutex name.
      * @param PDO $connection PDO connection instance to use.
      * @param string $lockMode Lock mode to be used {@see https://docs.oracle.com/en/database/oracle/oracle-database/21/arpls/DBMS_LOCK.html#GUID-8F868C41-CEA3-48E2-8701-3C0F8D2B308C}.
      * @param bool $releaseOnCommit Whether to release lock on commit.
      */
     public function __construct(
-        string $name,
-        PDO $connection,
+        private string $lockName,
+        private PDO $connection,
         string $lockMode = self::MODE_X,
-        bool $releaseOnCommit = false
+        private bool $releaseOnCommit = false
     ) {
         if (!in_array($lockMode, self::MODES, true)) {
             throw new InvalidArgumentException(sprintf(
@@ -59,11 +55,7 @@ final class OracleMutex extends Mutex
                 implode('", "', self::MODES),
             ));
         }
-
-        $this->lockName = $name;
-        $this->connection = $connection;
         $this->lockMode = $lockMode;
-        $this->releaseOnCommit = $releaseOnCommit;
 
         /** @var string $driverName */
         $driverName = $connection->getAttribute(PDO::ATTR_DRIVER_NAME);
@@ -72,7 +64,7 @@ final class OracleMutex extends Mutex
             throw new InvalidArgumentException("Oracle connection instance should be passed. Got \"$driverName\".");
         }
 
-        parent::__construct(self::class, $name);
+        parent::__construct(self::class, $lockName);
     }
 
     /**
