@@ -21,6 +21,8 @@ on:
 
 name: build
 
+permissions:
+  contents: read
 jobs:
   tests:
     name: PHP ${{ matrix.php }}-${{ matrix.os }}
@@ -43,17 +45,19 @@ jobs:
 
     services:
       oci:
-        image: wnameless/oracle-xe-11g-r2:latest
+        image: wnameless/oracle-xe-11g-r2@sha256:e8cfa3733a2c11b415fb94a9632424025d69165fb4903a22206f6073be30eeb9
         ports:
           - 1521:1521
         options: --name=oci
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5
+        with:
+          persist-credentials: false
 
       - name: Install PHP
-        uses: shivammathur/setup-php@v2
+        uses: shivammathur/setup-php@b604ade2a87db23f8871b7182e69ec5e75effb45
         with:
           php-version: ${{ matrix.php }}
           extensions: ${{ env.extensions }}
@@ -66,7 +70,7 @@ jobs:
         run: echo "COMPOSER_CACHE_DIR=$(composer config cache-dir)" >> $GITHUB_ENV
 
       - name: Cache dependencies installed with composer
-        uses: actions/cache@v2
+        uses: actions/cache@8492260343ad570701412c2f464a5877dc76bace
         with:
           path: ${{ env.COMPOSER_CACHE_DIR }}
           key: php${{ matrix.php }}-composer-${{ hashFiles('**/composer.json') }}
