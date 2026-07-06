@@ -25,7 +25,7 @@ permissions:
   contents: read
 jobs:
   psalm:
-    uses: yiisoft/actions/.github/workflows/psalm.yml@master # zizmor: ignore[unpinned-uses]
+    uses: yiisoft/actions/.github/workflows/psalm.yml@master
     with:
       extensions: pdo, pdo_oci, oci8
       os: >-
