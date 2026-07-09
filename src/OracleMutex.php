@@ -106,6 +106,7 @@ final class OracleMutex extends Mutex
         $statement->bindValue(':name', $this->lockName);
         $statement->bindParam(':lockStatus', $lockStatus, PDO::PARAM_INT, 1);
         $statement->execute();
+        /** @var int|string $lockStatus */
 
         return $lockStatus === 0 || $lockStatus === '0';
     }
@@ -131,6 +132,7 @@ final class OracleMutex extends Mutex
         $statement->bindValue(':name', $this->lockName);
         $statement->bindParam(':releaseStatus', $releaseStatus, PDO::PARAM_INT, 1);
         $statement->execute();
+        /** @var int|string $releaseStatus */
 
         return $releaseStatus === 0 || $releaseStatus === '0';
     }
