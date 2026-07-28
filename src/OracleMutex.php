@@ -100,7 +100,7 @@ final class OracleMutex extends Mutex
                     $timeout,
                     $releaseOnCommit
                 );
-            END;"
+            END;",
         );
 
         $statement->bindValue(':name', $this->lockName);
@@ -126,7 +126,7 @@ final class OracleMutex extends Mutex
             BEGIN
                 DBMS_LOCK.ALLOCATE_UNIQUE(:name, handle);
                 :releaseStatus := DBMS_LOCK.RELEASE(handle);
-            END;'
+            END;',
         );
 
         $statement->bindValue(':name', $this->lockName);

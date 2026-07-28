@@ -92,7 +92,7 @@ final class OracleMutexTest extends TestCase
             BEGIN
                 DBMS_LOCK.ALLOCATE_UNIQUE(:name, handle);
                 :releaseStatus := DBMS_LOCK.RELEASE(handle);
-            END;'
+            END;',
             );
 
         $releaseStatus = 0;
