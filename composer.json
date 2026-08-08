@@ -36,6 +36,7 @@
         "phpunit/phpunit": "^9.6.35",
         "rector/rector": "^2.5",
         "roave/infection-static-analysis-plugin": "^1.16",
+        "shipmonk/composer-dependency-analyser": "^1.8",
         "spatie/phpunit-watcher": "^1.23",
         "vimeo/psalm": "^4.30 || ^5.26.1 || ^6.16.1",
         "yiisoft/code-style": "^1.1"
@@ -62,6 +63,7 @@
         "test-watch": "phpunit-watcher watch",
         "psalm": "psalm",
         "cs-fix": "php-cs-fixer fix",
-        "rector": "rector"
+        "rector": "rector",
+        "dependency-analyser": "composer-dependency-analyser"
     }
 }
