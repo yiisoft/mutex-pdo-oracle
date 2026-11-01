@@ -23,14 +23,12 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     protected function connection(): PDO
     {
-        if ($this->connection === null) {
-            $this->connection = new PDO(
-                'oci:dbname=localhost:1521/XE',
-                'system',
-                'oracle',
-                [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION],
-            );
-        }
+        $this->connection ??= new PDO(
+            'oci:dbname=localhost:1521/XE',
+            'system',
+            'oracle',
+            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION],
+        );
 
         return $this->connection;
     }
