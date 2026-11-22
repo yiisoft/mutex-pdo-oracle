@@ -38,8 +38,7 @@ jobs:
           - 8.3
           - 8.4
           - 8.5
-          # TODO: Add 8.6 back when pdo_oci is available for PHP 8.6 in shivammathur/setup-php:
-          # https://github.com/shivammathur/setup-php/issues/1161
+          - 8.6
 
     services:
       oci:
