@@ -5,7 +5,7 @@ on:
     paths: &paths
       - '.github/workflows/static.yml'
       - 'src/**'
-      - 'psalm*.xml'
+      - 'phpstan.neon'
       - 'composer.json'
   push:
     branches: ['master']
@@ -15,8 +15,8 @@ permissions:
   contents: read
 
 jobs:
-  psalm:
-    uses: yiisoft/actions/.github/workflows/psalm.yml@master
+  phpstan:
+    uses: yiisoft/actions/.github/workflows/phpstan.yml@master
     with:
       extensions: pdo, pdo_oci, oci8
       os: >-
