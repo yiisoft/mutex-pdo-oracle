@@ -2,7 +2,7 @@
 
 ## 1.1.1 under development
 
-- no changes in this release.
+- Chg #53: Replace Psalm with PHPStan (@vjik)
 
 ## 1.1.0 October 19, 2021
 

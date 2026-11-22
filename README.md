@@ -12,7 +12,6 @@
 [![Code Coverage](https://codecov.io/gh/yiisoft/mutex-pdo-oracle/branch/master/graph/badge.svg)](https://codecov.io/gh/yiisoft/mutex-pdo-oracle)
 [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fyiisoft%2Fmutex-pdo-oracle%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/yiisoft/mutex-pdo-oracle/master)
 [![static analysis](https://github.com/yiisoft/mutex-pdo-oracle/workflows/static%20analysis/badge.svg)](https://github.com/yiisoft/mutex-pdo-oracle/actions?query=workflow%3A%22static+analysis%22)
-[![type-coverage](https://shepherd.dev/github/yiisoft/mutex-pdo-oracle/coverage.svg)](https://shepherd.dev/github/yiisoft/mutex-pdo-oracle)
 
 This library provides an Oracle mutex implementation for [yiisoft/mutex](https://github.com/yiisoft/mutex).
 
